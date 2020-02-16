@@ -7,7 +7,9 @@
 
 module.exports = {
   someSidebar: {
-    Docusaurus: ['doc1', 'doc2', 'doc3'],
-    Features: ['mdx'],
+    Helper: ['Array', 'Object'],
+    DataTypes: ['Option', 'Either', 'PromiseEither', 'Future', 'FutureEither'],
+    Stream: ['Stream', 'CStream'],
+    Server: ['Result', 'Middleware', 'handler', 'handlerM']
   },
 };

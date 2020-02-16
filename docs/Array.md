@@ -1,7 +1,7 @@
 ---
-id: doc1
-title: Style Guide
-sidebar_label: Style Guide
+id: Array
+title: Array functions
+sidebar_label: Array functions
 ---
 
 You can write content using [GitHub-flavored Markdown syntax](https://github.github.com/gfm/).
