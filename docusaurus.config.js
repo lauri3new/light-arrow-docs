@@ -1,11 +1,11 @@
 module.exports = {
   title: 'Light-Arrow',
   tagline: 'Composable and type safe asynchronous programming for Typescript',
-  url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  url: 'https://lauri3new.github.io',
+  baseUrl: '/light-arrow-docs/',
   favicon: 'img/favicon.ico',
   organizationName: 'lauri3new', // Usually your GitHub org/user name.
-  projectName: 'Light-Arrow', // Usually your repo name.
+  projectName: 'light-arrow-docs', // Usually your repo name.
   themeConfig: {
     navbar: {
       title: 'Light-Arrow',
