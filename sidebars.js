@@ -7,9 +7,7 @@
 
 module.exports = {
   someSidebar: {
-    Helper: ['Array', 'Object'],
-    DataTypes: ['Option', 'Either', 'PromiseEither', 'Future', 'FutureEither'],
-    Stream: ['Stream', 'CStream'],
-    Server: ['Result', 'Middleware', 'handler', 'handlerM']
+    Arrow: ['Arrow', 'Either'],
+    express: ['HttpApp', 'Result']
   },
 };

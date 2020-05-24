@@ -1,23 +1,23 @@
 module.exports = {
-  title: 'Light-fp',
-  tagline: 'Functional programming in typescript',
+  title: 'Light-Arrow',
+  tagline: 'Composable and type safe asynchronous programming for Typescript',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
   organizationName: 'lauri3new', // Usually your GitHub org/user name.
-  projectName: 'light-fp', // Usually your repo name.
+  projectName: 'Light-Arrow', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'Light-fp',
-      // logo: {
-      //   alt: 'My Site Logo',
-      //   src: 'img/logo.svg',
-      // },
+      title: 'Light-Arrow',
+      logo: {
+        alt: 'My Site Logo',
+        src: 'img/logo.png',
+      },
       links: [
-        {to: 'docs/Array', label: 'Docs', position: 'left'},
+        {to: 'docs/Arrow', label: 'Docs', position: 'left'},
         {to: 'blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/lauri3new/light-fp',
+          href: 'https://github.com/lauri3new/Light-Arrow',
           label: 'GitHub',
           position: 'right',
         },
@@ -30,26 +30,26 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/Array',
+              label: 'Arrow',
+              to: 'docs/Arrow',
             },
             {
-              label: 'Second Doc',
-              to: 'docs/doc2',
-            },
+              label: 'express',
+              to: 'docs/HttpApp',
+            }
           ],
         },
         {
-          title: 'Community',
+          title: 'Projects',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Disaster Check In App',
+              href: 'https://disastercheckin.app/',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
+              label: 'GreatList',
+              href: 'https://greatlist.co/',
+            }
           ],
         },
         {
@@ -61,16 +61,12 @@ module.exports = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
+              href: 'https://github.com/lauri3new/light-arrow',
+            }
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Light Arrow.`,
     },
   },
   presets: [
@@ -80,7 +76,7 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/lauri3new/light-arrow-docs/tree/master',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

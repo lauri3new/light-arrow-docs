@@ -1,7 +1,7 @@
 ---
-id: Either
-title: Either
-sidebar_label: Either
+id: HttpApp
+title: HttpApp
+sidebar_label: HttpApp
 ---
 
 Either represents a computation that can succeed with a value A or fail with a value E.

@@ -3,46 +3,48 @@ import classnames from 'classnames';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFeatherAlt, faArrowCircleRight,  } from '@fortawesome/free-solid-svg-icons'
+import { faNodeJs } from '@fortawesome/free-brands-svg-icons'
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './styles.module.css';
 
 const features = [
   {
     title: <>Functional</>,
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
+    imageUrl: faArrowCircleRight,
     description: (
       <>
-        Light-fp was designed to allow...
+        Light-Arrow is designed to enable referentially transparent and composable asynchronous code
       </>
     ),
   },
   {
     title: <>Light</>,
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    imageUrl: faFeatherAlt,
     description: (
       <>
-        Bla bla bla...
+        This library is small and based mainly around a single data type called an Arrow, which has a small API without too many concepts to learn
       </>
     ),
   },
   {
-    title: <>Typescript</>,
-    imageUrl: 'img/undraw_docusaurus_react.svg',
+    title: <>Express</>,
+    imageUrl: faNodeJs,
     description: (
       <>
-        Bla bla bla...
+        This module also exposes bindings for express and enables writing typesafe routes and middlewares
       </>
     ),
   },
 ];
 
 function Feature({imageUrl, title, description}) {
-  const imgUrl = useBaseUrl(imageUrl);
   return (
     <div className={classnames('col col--4', styles.feature)}>
-      {imgUrl && (
+      {imageUrl && (
         <div className="text--center">
-          <img className={styles.featureImage} src={imgUrl} alt={title} />
+          <FontAwesomeIcon className={styles.featureImage} icon={imageUrl} />
         </div>
       )}
       <h3>{title}</h3>
@@ -56,7 +58,7 @@ function Home() {
   const {siteConfig = {}} = context;
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
+      title={`${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
       <header className={classnames('hero hero--primary', styles.heroBanner)}>
         <div className="container">
@@ -68,7 +70,7 @@ function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('docs/Array')}>
+              to={useBaseUrl('docs/Arrow')}>
               Get Started
             </Link>
           </div>
