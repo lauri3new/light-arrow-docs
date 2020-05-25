@@ -4,7 +4,7 @@ title: Result
 sidebar_label: Result
 ---
 
-Either represents a computation that can succeed with a value A or fail with a value E.
+Result describes an http response. Results are translated into actual http responses when the http app is bound to the express app instance.
 
 ```ts
 export interface Result<A extends object | Buffer | string | undefined = any> {
@@ -32,13 +32,15 @@ const resultTwo = Result(httpStatus.OK, { data, object )
 
 | Interfaces and enums      | Description |
 | :---        |:---         |
-| ```Result<A extends object | Buffer | string | undefined = any>```   | Represents a http response. |
+| ```Result<A extends body = any>```   | Represents a http response. |
 | ```Cookie```   | Represents a http response. |
 | ```resultAction```   | Represents a http response. |
 | ```httpStatus```   | Represents a http response. |
 
 | Functions      | Type |
 | :---        |:---         |
-| Either   | ```Either<E, A>```     |
-| Right   | ```<A>(a: A):Right<A>```        |
-| Left   | ```<A>(a: A):Left<A>```        |
+| withCookies   | ```Either<E, A>```     |
+| clearCookies   | ```<A>(a: A):Right<A>```        |
+| withContentType   | ```<A>(a: A):Left<A>```        |
+| withHeaders   | ```<A>(a: A):Left<A>```        |
+| withAction   | ```<A>(a: A):Left<A>```        |

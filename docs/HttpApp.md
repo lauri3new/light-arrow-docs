@@ -4,35 +4,25 @@ title: HttpApp
 sidebar_label: HttpApp
 ---
 
-Either represents a computation that can succeed with a value A or fail with a value E.
-
-```ts
-export interface Either<E, A> {
-  _tag: string
-  get: () => E | A
-  leftMap:<B>(f:(_: E) => B) => Either<B, A>
-  map:<B>(f:(_: A) => B) => Either<E, B>
-  flatMap:<EE, B>(f:(_: A) => Either<E | EE, B>) => Either<E | EE, B>
-  match:<B, C>(f:(_:E) => B, g:(_:A) => C) => B | C
-}
-
-export type Right<A> = Either<never, A>
-export type Left<E> = Either<E, never>
-```
+An HttpApp is simply ```(ctx: Context) => Promise<Result>```. To help with type safety and composability we can define HttpRoutes as ```Arrow<A, notFound | Result, Result>``` where A extends Context. Middlewares can be defined as ```Arrow<A, notFound | Result, Context>```. We can combine httpRoutes together (similar to how we would use an express Router) using the Arrow combine function in a type safe manner. We can also compose middleware together using the Arrow ```andThen``` method.
 
 Example usage
 
 ```ts
-import { Either, Right, Left } from 'Light-Arrow/either'
+
 
 ```
 
-| Interface      | Description |
+| Interfaces and enums      | Description |
 | :---        |:---         |
-| ```Either<E, A>```   | Either represents a computation that can succeed with a value A or fail with a value E. |
+| ```<Context>```   | ```{ req: Request }``` |
+| ```notFound```   | ```{ path: string, method: string }``` |
+| ```HttpMethods```   | ```enum of http methods``` |
+| ```httpRoutes```   | ```Arrow<A, notFound / Result, Result>``` where A extends Context |
+| ```httpApp```   | ```(ctx: Context) => Promise<Result>``` 
 
-| Functions      | Type |
+| Functions      | Description |
 | :---        |:---         |
-| Either   | ```Either<E, A>```     |
-| Right   | ```<A>(a: A):Right<A>```        |
-| Left   | ```<A>(a: A):Left<A>```        |
+| get, post, patch, put, delete   |  functions that filter the matching of an incoming request by method and a supplied path string, returning an Arrow of type ```Arrow<A, notFound, Result>``` where A extends Context  |
+| bindApp   | used to attach the http app to an express app instance ```bindApp<A = {}>(a: Arrow<A & Context, Result, Result>,onError: (e?: Error) => Result,dependencies: A) => (expressApp: Express):void```        |
+| runResponse   | internally used by bindApp ```runResponse(res: Response, result: Result): void``` sends an http response from a result using the express response object       |
