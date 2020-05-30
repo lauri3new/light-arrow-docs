@@ -8,7 +8,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(90deg,#008cff,#986FFF) !important;
+  background: linear-gradient(90deg,rgb(98, 55, 207), rgb(225, 213, 255)) !important;
 }
 
 @media screen and (max-width: 966px) {

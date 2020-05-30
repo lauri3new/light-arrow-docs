@@ -10,6 +10,7 @@ Example usage
 
 ```ts
 
+})
 
 ```
 

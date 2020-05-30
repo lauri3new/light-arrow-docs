@@ -4,54 +4,87 @@ title: Arrow
 sidebar_label: Arrow
 ---
 
-Arrows are data structures that describe asynchronous operations that can succeed with a value Sout or fail with a value E that depends on some input state S. Arrows won't actually perform any operation until the run method is called, this means that Arrows have the nice property of being referentially transparent. By delaying execution until the run method is called, Arrows provide a way to perform dependency injection as we can group all the dependencies of the program into a single object type and provide test and production implementations of these in the run method as we wish.
+:::info
+It should be noted that Arrows are not currently stack safe, I am working on a stack safe implementation
+:::
+
+Arrows are data structures that describe asynchronous operations that can succeed with a value A or fail with a value E that depends on some input context Ctx. Arrows won't actually perform any operation until the run method is called, this means that Arrows have the nice property of being referentially transparent. By delaying execution until the run method is called, Arrows provide a way to perform dependency injection as we can group all the dependencies of the program into a single object type and provide test and production implementations of these in the run method as we wish.
 
 As well as the Arrow data type this module exposes helper functions for building type safe http apps using the express framework. Please see this section of the documentation for more detail.
 
-For functional programmers this is a kind of kleisli datatype with immutable methods, with some additional constructor and combinator functions.
+For functional programmers this is a kind of Kleisli promise datatype with immutable methods, with some additional constructor and combinator functions.
 
 ```ts
-export interface Arrow<S, E, Sout> {
-  __val: (_:S) => Promise<Either<E, Sout>>
-  map: <S2out>(f: (_:Sout) => S2out) => Arrow<S, E, S2out>
-  combineA: (f:Arrow<S, E, Sout>) => Arrow<S, E, Sout>
-  leftMap: <E2>(f: (_:E) => E2) => Arrow<S, E2, Sout>
-  flatMap: <E2, S2Out>(f: (_:Sout) => Arrow<S, E | E2, S2Out>) => Arrow<S, E | E2, S2Out>
-  andThen: <E2, S2Out>(_: Arrow<Sout, E2, S2Out>) => Arrow<S, E | E2, S2Out>
-  andThenMerge: <E2, S2Out>(_: Arrow<Sout, E2, S2Out>) => Arrow<S, E | E2, Sout & S2Out>
-  andThenF: <E2, S2Out>(f: (_:Sout) => Promise<Either<E, S2Out>>) => Arrow<S, E | E2, S2Out>
+interface Arrow<Ctx, E, A> {
+  __val: (_:Ctx) => Promise<Either<E, A>>
+  map: <B>(f: (_:A) => B) => Arrow<Ctx, E, B>
+  leftMap: <E2>(f: (_:E) => E2) => Arrow<Ctx, E2, A>
+  biMap: <E2, B>(f: (_:E) => E2, g: (_:A) => B) => Arrow<Ctx, E2, B>
+  flatMap: <E2, B>(f: (_:A) => Arrow<Ctx, E | E2, B>) => Arrow<Ctx, E | E2, B>
+  flatMapF: <E2, B>(f: (_:A) => (_:Ctx) => Promise<Either<E2, B>>) => Arrow<Ctx, E | E2, B>
+  andThen: <E2, B>(_: Arrow<A, E2, B>) => Arrow<Ctx, E | E2, B>
+  andThenF: <E2, B>(f: (_:A) => Promise<Either<E2, B>>) => Arrow<Ctx, E | E2, B>
+  andThenMerge: <E2, B>(_: Arrow<A, E2, B>) => Arrow<Ctx, E | E2, A & B>
+  combine: (f:Arrow<Ctx, E, A>) => Arrow<Ctx, E, A>
   runP: (
-    context: S
-  ) => Promise<Sout>
-  run: <A, B, C>(
-    context: S,
-    f: (_:Sout) => A,
-    g: (_:E) => B,
-    j: (_?: Error) => C
-  ) => Promise<A | B | C>
+    context: Ctx
+  ) => Promise<A>
+  run: <B, E2, ER>(
+    context: Ctx,
+    f: (_:A) => B,
+    g: (_:E) => E2,
+    j: (_?: Error) => ER
+  ) => Promise<B | E2 | ER>
 }
 ```
 
 Example usage
 
 ```ts
-import { ofContext } from 'Light-Arrow'
 
-interface UserService {
-  getUser: () => Promise<User>
+interface hasDb {
+  db: db
 }
 
-const arrow = ofContext<UserService>()
+interface hasEmailService {
+  emailService: {
+    send: Promise<string>
+  }
+}
+
+interface userService: {
+  getById: (id: number) => Arrow<hasDb, string, User>
+  getFriendsOf: (email: string) => Arrow<hasDb, string, User[]>
+  emailInvite: (emails: string[]) => Arrow<hasDb & hasEmailService, string, string>
+}
+
+const inviteFriendsOfUser = (id: number) => userService.getById(id)
+  .flatMap((user) => userService.getFriendsOf(user.email))
+  .flatMap((usersEmails) => userService.emailInvite(usersEmails))
+
+const inviteFriendsOfUsers = sequence([
+  inviteFriendsOfUser(1),
+  inviteFriendsOfUser(5),
+  inviteFriendsOfUser(7)
+])
+// no side effects performed yet, we have just described what we are going to do
+
+// we can now run our program at our leisure with test or production implementations
+inviteFriendsOfUsers
+  .runP({ db: mockDb, emailService: mockEmailService })
+
+inviteFriendsOfUsers
+  .runP({ db, emailService })
 
 ```
 
 | Interface      | Description |
 | :---        |:---         |
-| ```Arrow<S, E, Sout>```   | Arrows are data types that describe asynchronous operations that can succeed with a value Sout or fail with a value E that depends on some input state S |
+| ```Arrow<Ctx, E, A>```   | Arrows are data types that describe asynchronous operations that can succeed with a value A or fail with a value E that depends on some input state S |
 
 | Functions      | Type |
 | :---        |:---         |
-| Arrow   | ```Arrow<S, E, Sout>((_:S) => Promise<Either<E, Sout>>): Arrow<S, E, Sout>```     |
+| Arrow   | ```Arrow<Ctx, E, A>((_:Ctx) => Promise<Either<E, A>>): Arrow<Ctx, E, A>```     |
 | resolve   | ```<A>(a: A):Arrow<any, never, A>```        |
 | reject   | ```<A>(a: A):Arrow<any, A, never>```        |
 | ofContext   | ```<A>():Arrow<A, never, A>```        |
@@ -59,8 +92,8 @@ const arrow = ofContext<UserService>()
 | fromFailablePromise   | ```<A, E, C = any>(a: Promise<A>):Arrow<C, E, A>```        |
 | fromEither   | ```<E, A, C = any>(a:Either<E, A>):Arrow<C, E, A>```        |
 | fromPEither   | ```<E, A, C = any>(a:Promise<Either<E, A>>):Arrow<C, E, A>```        |
-| fromKP   | ```<S, A>(a:(_:S) => Promise<A>):Arrow<S, never, A>```        |
-| fromFailableKP   | ```<S, E, A>(a:(_:S) => Promise<A>):Arrow<S, E, A>```        |
+| fromKP   | ```<Ctx, A>(a:(_:Ctx) => Promise<A>):Arrow<Ctx, never, A>```        |
+| fromFailableKP   | ```<Ctx, E, A>(a:(_:Ctx) => Promise<A>):Arrow<Ctx, E, A>```        |
 | sequence   | ```<A, B, C>(as: Arrow<A, B, C>[]): Arrow<A, B, C[]>```        |
 | combine   | ```<A, B, C>(...as: Arrow<A, B, C>[]): Arrow<A, B, C>```        |
 | retry   | ```(n: number) => <A, B, C>(a: Arrow<A, B, C>): Arrow<A, B, C>```        |
