@@ -8,11 +8,7 @@ sidebar_label: Arrow
 It should be noted that Arrows are not currently stack safe, I am working on a stack safe implementation
 :::
 
-Arrows are data structures that describe asynchronous operations that can succeed with a value A or fail with a value E that depends on some input context Ctx. Arrows won't actually perform any operation until the run method is called, this means that Arrows have the nice property of being referentially transparent. By delaying execution until the run method is called, Arrows provide a way to perform dependency injection as we can group all the dependencies of the program into a single object type and provide test and production implementations of these in the run method as we wish.
-
-As well as the Arrow data type this module exposes helper functions for building type safe http apps using the express framework. Please see this section of the documentation for more detail.
-
-For functional programmers this is a kind of Kleisli promise datatype with immutable methods, with some additional constructor and combinator functions.
+Arrows are data structures that describe asynchronous operations that can succeed with a value A or fail with a value E that depends on some input context Ctx. Arrows won't actually perform any operation until the run method is called, this means that Arrows have the nice property of being referentially transparent. By delaying execution until the run method is called, Arrows provide a way to perform dependency injection as we can group all the dependencies of the program into a single object type and provide test and production implementations of these in the run method as we wish, see the example below.
 
 ```ts
 interface Arrow<Ctx, E, A> {
@@ -53,9 +49,9 @@ interface hasEmailService {
 }
 
 interface userService: {
-  getById: (id: number) => Arrow<hasDb, string, User>
-  getFriendsOf: (email: string) => Arrow<hasDb, string, User[]>
-  emailInvite: (emails: string[]) => Arrow<hasDb & hasEmailService, string, string>
+  getById: <A extends hasDb>(id: number) => Arrow<A, string, User>
+  getFriendsOf: <A extends hasDb>(email: string) => Arrow<A, string, User[]>
+  emailInvite: <A extends hasDb & hasEmailService>(emails: string[]) => Arrow<A, string, string>
 }
 
 const inviteFriendsOfUser = (id: number) => userService.getById(id)
@@ -69,10 +65,15 @@ const inviteFriendsOfUsers = sequence([
 ])
 // no side effects performed yet, we have just described what we are going to do
 
-// we can now run our program at our leisure with test or production implementations
+// we can now run our program at our leisure with test or production implementations of our dependencies
+// test
 inviteFriendsOfUsers
-  .runP({ db: mockDb, emailService: mockEmailService })
+  .runP({
+    db: mockDb,
+    emailService: mockEmailService
+  })
 
+// production
 inviteFriendsOfUsers
   .runP({ db, emailService })
 
@@ -80,7 +81,7 @@ inviteFriendsOfUsers
 
 | Interface      | Description |
 | :---        |:---         |
-| ```Arrow<Ctx, E, A>```   | Arrows are data types that describe asynchronous operations that can succeed with a value A or fail with a value E that depends on some input state S |
+| ```Arrow<Ctx, E, A>```   | Arrows are data types that describe asynchronous operations that can succeed with a value A or fail with a value E that require some dependencies S. |
 
 | Functions      | Type |
 | :---        |:---         |

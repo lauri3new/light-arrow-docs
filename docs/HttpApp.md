@@ -4,13 +4,16 @@ title: HttpApp
 sidebar_label: HttpApp
 ---
 
-An HttpApp is simply ```(ctx: Context) => Promise<Result>```. To help with type safety and composability we can define HttpRoutes as ```Arrow<A, notFound | Result, Result>``` where A extends Context. Middlewares can be defined as ```Arrow<A, notFound | Result, Context>```. We can combine httpRoutes together (similar to how we would use an express Router) using the Arrow combine function in a type safe manner. We can also compose middleware together using the Arrow ```andThen``` method.
+Light-arrow provides bindings for writing type safe http apps. Bindings are provided for TaskEither and Arrow datatypes. Instead of using native response methods we can instead describe the http response using a Result datatype - see https://lauri3new.github.io/light-arrow-docs/docs/Result.
+
+Please note that all functions described in this doc are also provided for TaskEither.
+An HttpApp is simply ```(ctx: Context) => Promise<Result>```. To help with type safety and composability we can define HttpRoutes as ```<A extends Context>(ctx: Context) => Arrow<A, notFound | Result, Result>``` where A extends Context.
+
+Middlewares can be defined as ```<A extends Context>(ctx: Context) => Arrow<A, notFound | Result, Context>```. We can combine httpRoutes together (similar to how we would use an express Router) using the Arrow combineK function in a type safe manner. We can also compose middleware together and with handler functions using the Arrow composeK method. Once we have all the routes described we can convert the HttpRoutes to an HttpApp using the seal function, providing functions for converting the notFound type and runtime exceptions into http Results.
 
 Example usage
 
 ```ts
-
-})
 
 ```
 
