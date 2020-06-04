@@ -21,7 +21,7 @@ interface Arrow<Ctx, E, A> {
   andThen: <E2, B>(_: Arrow<A, E2, B>) => Arrow<Ctx, E | E2, B>
   andThenF: <E2, B>(f: (_:A) => Promise<Either<E2, B>>) => Arrow<Ctx, E | E2, B>
   andThenMerge: <E2, B>(_: Arrow<A, E2, B>) => Arrow<Ctx, E | E2, A & B>
-  combine: (f:Arrow<Ctx, E, A>) => Arrow<Ctx, E, A>
+  combine: <E2, B>(f:Arrow<Ctx, E2, B>) => Arrow<Ctx, E2, A | B>
   runP: (
     context: Ctx
   ) => Promise<A>

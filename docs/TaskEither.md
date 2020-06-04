@@ -8,24 +8,20 @@ sidebar_label: TaskEither
 It should be noted that TaskEithers are not currently stack safe, I am working on a stack safe implementation
 :::
 
-TaskEithers are data structures that describe asynchronous operations that can succeed with a value A or fail with a value E that depends on some input context Ctx. TaskEithers won't actually perform any operation until the run method is called, this means that TaskEithers have the nice property of being referentially transparent. By delaying execution until the run method is called, TaskEithers provide a way to perform dependency injection as we can group all the dependencies of the program into a single object type and provide test and production implementations of these in the run method as we wish.
-
-As well as the TaskEither data type this module exposes helper functions for building type safe http apps using the express framework. Please see this section of the documentation for more detail.
-
-For functional programmers this is a kind of Kleisli promise datatype with immutable methods, with some additional constructor and combinator functions.
+TaskEithers are data structures that describe asynchronous operations that can succeed with a value A or fail with a value E. TaskEithers won't actually perform any operation until the run method is called, this means that TaskEithers have the nice property of being referentially transparent. By delaying execution until the run method is called.
 
 ```ts
-interface TaskEither<Ctx, E, A> {
-  __val: (_:Ctx) => Promise<Either<E, A>>
-  map: <B>(f: (_:A) => B) => TaskEither<Ctx, E, B>
-  leftMap: <E2>(f: (_:E) => E2) => TaskEither<Ctx, E2, A>
-  biMap: <E2, B>(f: (_:E) => E2, g: (_:A) => B) => TaskEither<Ctx, E2, B>
-  flatMap: <E2, B>(f: (_:A) => TaskEither<Ctx, E | E2, B>) => TaskEither<Ctx, E | E2, B>
-  flatMapF: <E2, B>(f: (_:A) => (_:Ctx) => Promise<Either<E2, B>>) => TaskEither<Ctx, E | E2, B>
-  andThen: <E2, B>(_: TaskEither<A, E2, B>) => TaskEither<Ctx, E | E2, B>
-  andThenF: <E2, B>(f: (_:A) => Promise<Either<E2, B>>) => TaskEither<Ctx, E | E2, B>
-  andThenMerge: <E2, B>(_: TaskEither<A, E2, B>) => TaskEither<Ctx, E | E2, A & B>
-  combine: (f:TaskEither<Ctx, E, A>) => TaskEither<Ctx, E, A>
+interface TaskEither<E, A> {
+  __val: () => Promise<Either<E, A>>
+  map: <B>(f: (_:A) => B) => TaskEither<E, B>
+  leftMap: <E2>(f: (_:E) => E2) => TaskEither<E2, A>
+  biMap: <E2, B>(f: (_:E) => E2, g: (_:A) => B) => TaskEither<E2, B>
+  flatMap: <E2, B>(f: (_:A) => TaskEither<E | E2, B>) => TaskEither<E | E2, B>
+  flatMapF: <E2, B>(f: (_:A) => () => Promise<Either<E2, B>>) => TaskEither<E | E2, B>
+  andThen: <E2, B>(_: TaskEither<A, E2, B>) => TaskEither<E | E2, B>
+  andThenF: <E2, B>(f: (_:A) => Promise<Either<E2, B>>) => TaskEither<E | E2, B>
+  andThenMerge: <E2, B>(_: TaskEither<A, E2, B>) => TaskEither<E | E2, A & B>
+  combine: <E2, B>(f:TaskEither<E2, B>) => TaskEither<E2, A | B>
   runP: (
     context: Ctx
   ) => Promise<A>
@@ -73,7 +69,7 @@ inviteFriendsOfUsers
 
 | Functions      | Type |
 | :---        |:---         |
-| TaskEither   | ```TaskEither<E, A>((_:Ctx) => Promise<Either<E, A>>): TaskEither<E, A>```     |
+| TaskEither   | ```TaskEither<E, A>(() => Promise<Either<E, A>>): TaskEither<E, A>```     |
 | resolve   | ```<A>(a: A):TaskEither<never, A>```        |
 | reject   | ```<A>(a: A):TaskEither<A, never>```        |
 | ofContext   | ```<A>():TaskEither<never, A>```        |
