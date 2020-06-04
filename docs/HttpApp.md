@@ -26,12 +26,11 @@ import { OK, BadRequest, NotFound, InternalServerError } from 'light-arrow/expre
 import { get, seal, bindApp } from 'light-arrow/express/taskEither'
 import { composeK, combineK } from 'light-arrow/express/taskEither'
 
-const myRoute = composeK(get('/user'), (ctx) => {
-  return ctx.services.getUsers()
-    .biMap(
-      (reason) => BadRequest({ reason })
-      (data) => OK({ data, object: 'User' }),
-    )
+const myRoute = composeK(get('/user'), (ctx) => ctx.services.getUsers()
+  .biMap(
+    (reason) => BadRequest({ reason }),
+    (data) => OK({ data, object: 'User' })
+  ))
 
 // we can compose in a type safe manner different http routes and middlewares
 const routes = composeK(myGlobalMiddlewares, combineK(
