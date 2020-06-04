@@ -7,7 +7,7 @@
 
 module.exports = {
   someSidebar: {
-    Arrow: ['Arrow', 'Either'],
+    'Data Types': ['TaskEither', 'Arrow', 'Either'],
     express: ['HttpApp', 'Result']
   },
 };
