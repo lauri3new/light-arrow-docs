@@ -7,13 +7,17 @@ module.exports = {
   organizationName: 'lauri3new', // Usually your GitHub org/user name.
   projectName: 'light-arrow-docs', // Usually your repo name.
   themeConfig: {
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true
+    },
     navbar: {
       title: 'Light-Arrow',
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.png',
       },
-      links: [
+      items: [
         {to: 'docs/Arrow', label: 'Docs', position: 'left'},
         {to: 'blog', label: 'Blog', position: 'left'},
         {

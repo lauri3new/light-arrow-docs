@@ -4,24 +4,20 @@ title: Either
 sidebar_label: Either
 ---
 
-:::info
-It should be noted that Eithers are not currently stack safe, I am working on a stack safe implementation
-:::
-
-Either represents a computation that can succeed with a value A or fail with a value E.
+Either represents a computation that can succeed with a value R or fail with a value E. Either allows chaining, via the flatMap method, of successive computations that may fail. This enables centralised error handling in a typesafe way.
 
 ```ts
-export interface Either<E, A> {
+export interface Either<E, R> {
   _tag: string
-  get: () => E | A
-  map:<B>(f:(_: A) => B) => Either<E, B>
-  leftMap:<E2>(f:(_: E) => E2) => Either<E2, A>
-  biMap:<E2, B>(f:(_:E) => E2, g:(_:A) => B) => Either<E2, B>
-  flatMap:<E2, B>(f:(_: A) => Either<E | E2, B>) => Either<E | E2, B>
-  match:<B, C>(f:(_:E) => B, g:(_:A) => C) => B | C
+  get: () => E | R
+  map:<R2>(f:(_: R) => R2) => Either<E, R2>
+  leftMap:<E2>(f:(_: E) => E2) => Either<E2, R>
+  biMap:<E2, R2>(f:(_:E) => E2, g:(_:R) => R2) => Either<E2, R2>
+  flatMap:<E2, R2>(f:(_: R) => Either<E | E2, R2>) => Either<E | E2, R2>
+  match:<R2, E2>(f:(_:E) => E2, g:(_:R) => R2) => E2 | R2
 }
 
-export type Right<A> = Either<never, A>
+export type Right<R> = Either<never, R>
 export type Left<E> = Either<E, never>
 ```
 
@@ -47,10 +43,10 @@ const myResult = safeDivide(Math.random(), Math.random() - 0.5)
 
 | Interface      | Description |
 | :---        |:---         |
-| ```Either<E, A>```   | Either represents a computation that can succeed with a value A or fail with a value E. |
+| ```Either<E, R>```   | Either represents a computation that can succeed with a value R or fail with a value E. |
 
 | Functions      | Type |
 | :---        |:---         |
-| Either   | ```Either<E, A>```     |
-| Right   | ```<A>(a: A):Right<A>```        |
-| Left   | ```<A>(a: A):Left<A>```        |
+| Either   | ```Either<E, R>```     |
+| Right   | ```<R>(a: R):Right<R>```        |
+| Left   | ```<E>(a: E):Left<E>```        |

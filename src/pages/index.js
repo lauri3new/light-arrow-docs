@@ -1,18 +1,18 @@
-import React from 'react';
-import classnames from 'classnames';
-import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFeatherAlt, faArrowCircleRight,  } from '@fortawesome/free-solid-svg-icons'
-import { faNodeJs } from '@fortawesome/free-brands-svg-icons'
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { faNodeJs } from '@fortawesome/free-brands-svg-icons';
+import { faArrowAltCircleRight, faFeatherAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Layout from '@theme/Layout';
+import classnames from 'classnames';
+import React from 'react';
 import styles from './styles.module.css';
 
 const features = [
   {
     title: <>Functional</>,
-    imageUrl: faArrowCircleRight,
+    imageUrl: faArrowAltCircleRight,
     description: (
       <>
         Light-Arrow is designed to enable referentially transparent and composable asynchronous code

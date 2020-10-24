@@ -39,8 +39,8 @@ const resultTwo = Result(httpStatus.OK, { data, object )
 
 | Functions      | Type |
 | :---        |:---         |
-| withCookies   | ```Either<E, A>```     |
-| clearCookies   | ```<A>(a: A):Right<A>```        |
-| withContentType   | ```<A>(a: A):Left<A>```        |
-| withHeaders   | ```<A>(a: A):Left<A>```        |
-| withAction   | ```<A>(a: A):Left<A>```        |
+| withCookies   | ```<A extends Result<any>>(cookies: Cookie[]) => (a: A) => A & { cookies: Cookie[]; ```     |
+| clearCookies   | ```<A extends Result<any>>(cookies: ClearCookie[]) => (a: A) => A & { clearCookies:ClearCookie[];}```        |
+| withContentType   | ```<A extends Result<any>>(contentType: string) => (a: A) => A & {contentType: string;}```        |
+| withHeaders   | ```<A extends Result<any>>(headers: {[key: string]: string;}) => (a: A) => A & {headers: {[x: string]: string;};}```        |
+| withAction   | ```<A extends Result<any>>(action: [resultAction, string] \ [resultAction, string, object]) => (a: A) => A & {action: [resultAction, string] \ [resultAction, string, object];}```        |
