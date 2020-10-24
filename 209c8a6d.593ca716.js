@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[5],{64:function(l){l.exports=JSON.parse('{"allTagsPath":"/light-arrow-docs/blog/tags","slug":"kleisli","name":"kleisli","count":1,"permalink":"/light-arrow-docs/blog/tags/kleisli"}')}}]);
