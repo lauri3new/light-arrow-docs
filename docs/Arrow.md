@@ -6,7 +6,7 @@ sidebar_label: Arrow
 
 ### Arrows
 
-Arrows are data structures that describe asynchronous operations that can succeed with a result value R or fail with a value E that depends on some dependencies D. Practically many programs or parts of programs we write fit that description. Arrows have a discoverable 'fluent' chain-able API, similar to native Promises and Arrays. To see a list of the full API of an Arrow check out the 'Methods' table at the bottom of this page.
+Arrows are data structures that describe asynchronous operations that can succeed with a result value R or fail with a value E that depends on some dependencies D. Practically many programs or parts of programs we write fit that description. For those familiar to functional programming, Arrows are a kind of ReaderTaskEither. Arrows have a discoverable 'fluent' chain-able API, similar to native Promises and Arrays. To see a list of the full API of an Arrow check out the 'Methods' table at the bottom of this page.
 
 ```ts
                                   Arrow<D, E, R>                                  
