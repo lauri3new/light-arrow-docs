@@ -99,17 +99,22 @@ invites.runAsPromise({
 })
 ```
 
+
 ### Performance
 
-Arrows are stack safe and perform similiarly to native promises under performance testing, but have all of the benefits listed above. In subsequent releases Arrows will have additional features such as cancellation.
+Arrows are stack safe and perform similiarly to native promises under performance testing, but have all of the benefits listed above.
 
 ### Interoperability
 
-There are a number of helper functions to convert existing types to Arrows, including basic values, functions, async functions. See these in the table Functions (create arrows from other types) below.
+There are a number of helper functions to convert existing types to Arrows, including basic values, functions, async functions. See these in the table Functions (create arrows from other types) below. Familiar helper functions such as `all` and `race` are provided as Arrow equivalents to `Promise.all` and `Promise.race`.
 
 ### Composability
 
 Arrows are highly composable through their various methods listed below. The `orElse` and `andThen` methods are also provided as functions that accept n number of Arrows, `orElse` can be used for 'horizontal' composition, such as building up the routes of a express App. `andThen` can be used for 'vertical' composition, such as changing the context of a request for example in an authorisation middleware where the user making the requests details are added to the context for use by subsequent middlewares. Some more combinators are included such as `retry` and `repeat`.
+
+### Cancellation
+
+Arrows support cancellation, `run` returns a cancel function enabling early termination of executing Arrows.
 
 
 | Interface      | Description |
@@ -142,8 +147,8 @@ Arrows are highly composable through their various methods listed below. The `or
 | drawFailableAsync   | ```<R, D = {}, E = Error>(a:(_:D) => Promise<R>):Arrow<D, E, R>```     | Create an Arrow from an async function that may fail with error type E. |
 | drawFunction   | ```<R, D = {}>(a:(_:D) => R): Arrow<D, never, R>```     | Create an Arrow from a regular function that wont fail. |
 | drawFailableFunction   | ```<R, D = {}, E = Error>(a:(_:D) => R): Arrow<D, E, R>```     | Create an Arrow from a regular function that may fail with error type E. |
-| succeed   | ```<R, D = {}>(a: R): Arrow<D, never, R>```     | Create an Arrow from a value with the result type as the value type. |
-| fail   | ```<E, D = {}>(a: E): Arrow<D, E, never>```     | Create an Arrow from a value with the error type as the value type. |
+| resolve   | ```<R, D = {}>(a: R): Arrow<D, never, R>```     | Create an Arrow from a value with the result type as the value type. |
+| reject   | ```<E, D = {}>(a: E): Arrow<D, E, never>```     | Create an Arrow from a value with the error type as the value type. |
 | drawNullable   | ```<R>(a: R\null\undefined): Arrow<{}, null, R>```     | Create an Arrow from a nullable value with either the error type as null or the result type as the value type, depending on if the value is null or not. |
 | drawEither   | ```<E, R>(a:Either<E, R>):Arrow<{}, E, R>```     | Create an Arrow from an Either type. |
 
@@ -154,6 +159,8 @@ Arrows are highly composable through their various methods listed below. The `or
 | orElse   | ```<D2, E2, R2>(f:...Arrow<D2, E2, R2>) => Arrow<D & D2, E2, R\R2>```     | Returns an Arrow that will return the result value of the first succesful Arrow.  |
 | retry   | ```(n: number) => <D, E, R>(a: Arrow<D, E, R>): Arrow<D, E, R>```     | Returns an Arrow that will repeat the operation and returns with the result value of the last Arrow.  |
 | repeat   | ```(n: number) => <D, E, R>(a: Arrow<D, E, R>): Arrow<D, E, R>```     | Returns an Arrow that will repeat the operation until first succesful run.  |
+| all   | ```(n: number) => <D, E, R>(a: Arrow<D, E, R>[]): Arrow<D, E, R[]>```     | Similiar to `Promise.all`, returns an Arrow that will return with an array of R values, if an Arrow rejects then all other Arrows waiting to return are cancelled.  |
+| race   | ```(n: number) => <D, E, R>(a: Arrow<D, E, R>[]): Arrow<D, E, R>```     | Similiar to `Promise.race`, Returns an Arrow that will return with the R value of the first arrow that succeeds, the other Arrows are cancelled.  |
 
 | Utility types      | Type | Description |
 | :---        |:---         |:---         |
