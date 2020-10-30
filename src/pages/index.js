@@ -15,7 +15,7 @@ const features = [
     imageUrl: faArrowAltCircleRight,
     description: (
       <>
-        Light-Arrow is designed to enable referentially transparent and composable asynchronous code
+        Light Arrow is designed to enable referentially transparent and composable asynchronous code
       </>
     ),
   },

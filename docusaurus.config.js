@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Light-Arrow',
+  title: 'Light Arrow',
   tagline: 'Composable and type safe asynchronous programming for Typescript',
   url: 'https://lauri3new.github.io',
   baseUrl: '/light-arrow-docs/',
@@ -12,7 +12,7 @@ module.exports = {
       disableSwitch: true
     },
     navbar: {
-      title: 'Light-Arrow',
+      title: 'Light Arrow',
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.png',
