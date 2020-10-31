@@ -138,7 +138,7 @@ Arrows support limited cancellation, `run` returns a cancel function whereby any
 | groupSecondF   | ```<D2, E2, R2>(f:Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, B>```        | Like groupSecond but accepts a function returning a `Promise<Either>`. |
 | andThenF   | ```<E2, R2>(_:(_:R) => Promise<Either<E2, R2>>) => Arrow<D, E\E2, R2>```        | Like andThen but accepts a function returning a `Promise<Either>`. |
 | orElseF   | ```<D2, E2, R2>(f:(_:D2) => Promise<Either<E2, R2>>) => Arrow<D & D2, E2, R\R2>```        | Like orElse but accepts a function returning a `Promise<Either>`. |
-| bracket | ```<D2>(f: (_: R) => Arrow<D2, never, any>): <D3, E2, R2>(g: (_: R) => Arrow<D3, E2, R2>) => Arrow<D & D2 & D3, E | E2, R2>``` | bracket is useful for modelling effects that consume resources that are used and then released, it accepts a 'release' function that always executes after the second argument 'usage' function has executed, regardless of if it has failed or succeeded. The return type is an Arrow with the result type determined by the 'usage' function. |
+| bracket | ```<D2>(f: (_: R) => Arrow<D2, never, any>): <D3, E2, R2>(g: (_: R) => Arrow<D3, E2, R2>) => Arrow<D & D2 & D3, E\E2, R2>``` | bracket is useful for modelling effects that consume resources that are used and then released, it accepts a 'release' function that always executes after the second argument 'usage' function has executed, regardless of if it has failed or succeeded. The return type is an Arrow with the result type determined by the 'usage' function. |
 
 | Functions (create arrows from other types)    | Type | Description |
 | :---        |:---         |:---         |
