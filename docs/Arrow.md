@@ -130,6 +130,7 @@ Arrows support limited cancellation, `run` returns a cancel function whereby any
 | group   | ```<D2, E2, R2>(f:Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, [A, B]>```        | Returns an Arrow with the result values in a tuple of the two grouped Arrows. |
 | groupFirst   | ```<D2, E2, R2>(f:Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, A>```        | Returns an Arrow with the first result value of the two grouped Arrows. |
 | groupSecond   | ```<D2, E2, R2>(f:Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, B>```        | Returns an Arrow with the second result value of the two grouped Arrows. |
+| groupParallel   | ```<D2, E2, R2>(f:Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, [A, B]>```        | Returns an Arrow with the result values in a tuple of the two grouped Arrows where they will be run in parallel. |
 | andThen   | ```<E2, R2>(f: Arrow<A, E2, R2>) => Arrow<D, E\E2, R2>```        | Provides the result of the first Arrow as the dependencies of the next Arrow, allowing 'start to end' composition. |
 | orElse   | ```<D2, E2, R2>(f:Arrow<D2, E2, R2>) => Arrow<D & D2, E2, A\R2>```        | Returns an Arrow that will run the second arrow if the first fails. |
 | flatMapF   | ```<D2, E2, R2>(f: (_:R) => (_:D2) => Promise<Either<E2, R2>>) => Arrow<D & D2, E\E2, R2>```        | Like flatmap but accepts a function returning a `Promise<Either>`. |
@@ -139,6 +140,9 @@ Arrows support limited cancellation, `run` returns a cancel function whereby any
 | andThenF   | ```<E2, R2>(_:(_:R) => Promise<Either<E2, R2>>) => Arrow<D, E\E2, R2>```        | Like andThen but accepts a function returning a `Promise<Either>`. |
 | orElseF   | ```<D2, E2, R2>(f:(_:D2) => Promise<Either<E2, R2>>) => Arrow<D & D2, E2, R\R2>```        | Like orElse but accepts a function returning a `Promise<Either>`. |
 | bracket | ```<D2>(f: (_: R) => Arrow<D2, never, any>): <D3, E2, R2>(g: (_: R) => Arrow<D3, E2, R2>) => Arrow<D & D2 & D3, E\E2, R2>``` | bracket is useful for modelling effects that consume resources that are used and then released, it accepts a 'release' function that always executes after the second argument 'usage' function has executed, regardless of if it has failed or succeeded. The return type is an Arrow with the result type determined by the 'usage' function. |
+| runAsPromise | ```(context: D) => Promise<{hasError: boolean, context: D, error: E, result: R, failure: Error}>``` |  Executes this Arrow, returning a promise with an object of the outcomes. |
+| run | ```<R21, E2, F, D2>(context: D, mapResult: (_:R) => R21, mapError: (_:E) => E2, handleFailure?: (_: Error) => F, handleContext?: (_:D) => D2) => () => void``` | Executes this Arrow with the given handler functions, returning a cancel function. |
+| runAsPromiseResult | ```(context: D) => Promise<R>``` | Unsafely executes this Arrow, returning a promise with the result or throwing an Error with an object of type `{ tag: 'error' | 'failure' , value: E | Error }` in an error or exception case.|
 
 | Functions (create arrows from other types)    | Type | Description |
 | :---        |:---         |:---         |
@@ -157,6 +161,8 @@ Arrows support limited cancellation, `run` returns a cancel function whereby any
 | :---        |:---         |:---         |
 | sequence   | ```<D, E, R>(as: Arrow<D, E, R>[]): Arrow<D, E, R[]>```     | Convert a list of arrows into a single Arrow returning a list of result (R) values.  |
 | group   | ```<D2, E2, R2>(f:...Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, [R, R2]>```   | Group many Arrows into a single Arrow returning an n tupe of result (R) values.  |
+| groupParallel   | ```<D2, E2, R2>(f:...Arrow<Partial<D> & D2, E2, R2>) => Arrow<D & D2, E\E2, [R, R2]>```   | 
+Returns an Arrow with the result values in a tuple of the two grouped Arrows, running the operations in parallel. |
 | orElse   | ```<D2, E2, R2>(f:...Arrow<D2, E2, R2>) => Arrow<D & D2, E2, R\R2>```     | Returns an Arrow that will return the result value of the first succesful Arrow.  |
 | retry   | ```(n: number) => <D, E, R>(a: Arrow<D, E, R>): Arrow<D, E, R>```     | Returns an Arrow that will repeat the operation and returns with the result value of the last Arrow.  |
 | repeat   | ```(n: number) => <D, E, R>(a: Arrow<D, E, R>): Arrow<D, E, R>```     | Returns an Arrow that will repeat the operation until first succesful run.  |
