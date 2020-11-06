@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[14],{72:function(o){o.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Light Arrow - composable and type safe asynchronous programming for Typescript","permalink":"/light-arrow-docs/blog/2020/11/06/light-arrow"},{"title":"Welcome","permalink":"/light-arrow-docs/blog/2020/05/25/welcome"}]}')}}]);
