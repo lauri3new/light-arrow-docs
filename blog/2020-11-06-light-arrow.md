@@ -1,14 +1,16 @@
 ---
 id: light-arrow-1
 title: Light Arrow - composable and type safe asynchronous programming for Typescript
+published: true
 author: Laurence Newman
 author_title: Founder @ Disaster check in
 author_url: https://github.com/lauri3new
 author_image_url: https://avatars2.githubusercontent.com/u/22150857?s=460&u=eeddb00e96c24ccb9a40810a791de544beb4a59b&v=4
+canonical_url: https://itnext.io/light-arrow-composable-and-type-safe-asynchronous-programming-for-typescript-6d6b3380b8d0
 tags: [light-arrow, functional programming, async, IO]
 ---
 
-### Also published on [itnext.io](https://itnext.io/light-arrow-composable-and-type-safe-asynchronous-programming-for-typescript-6d6b3380b8d0)
+### Originally published at [itnext.io](https://itnext.io/light-arrow-composable-and-type-safe-asynchronous-programming-for-typescript-6d6b3380b8d0)
 
 **Welcome** to part 1 of this series on using the typescript library Light Arrow for functional programming in Typescript. In part 1 we will cover the Arrow data type. In part 2 we will build a fully type-safe http server.
 
