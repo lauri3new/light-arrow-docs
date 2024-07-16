@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{60:function(a){a.exports=JSON.parse('{"allTagsPath":"/light-arrow-docs/blog/tags","slug":"async","name":"async","count":1,"permalink":"/light-arrow-docs/blog/tags/async"}')}}]);

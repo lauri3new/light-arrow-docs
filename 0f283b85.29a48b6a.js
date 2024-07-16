@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{60:function(o){o.exports=JSON.parse('{"allTagsPath":"/light-arrow-docs/blog/tags","slug":"io","name":"io","count":1,"permalink":"/light-arrow-docs/blog/tags/io"}')}}]);
