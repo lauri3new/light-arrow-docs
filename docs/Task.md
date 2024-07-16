@@ -83,7 +83,7 @@ There are a number of helper functions to convert existing types to Tasks, inclu
 
 ### Composability
 
-Tasks are highly composable through their various methods listed below. The `orElse` and `andThen` methods are also provided as functions that accept n number of Tasks, `orElse` can be used for 'horizontal' composition, such as building up the routes of a express App. `andThen` can be used for 'vertical' composition, such as changing the context of a request for example in an authorisation middleware where the user making the requests details are added to the context for use by subsequent middlewares. Some more combinators are included such as `retry` and `repeat`.
+Tasks are highly composable through their various methods listed below. `orElse` can be used for 'horizontal' composition, such as building up the routes of a express App. Some more combinators are included such as `retry` and `repeat`.
 
 ### Cancellation
 
@@ -106,30 +106,22 @@ Tasks support cancellation. Cancellation behaviour can vary based on how the Tas
 | groupSecond   | ```<E2, R2>(f:Task< E2, R2>) => Task< E\E2, B>```        | Returns a Task with the second result value of the two grouped Tasks. |
 | groupParallel   | ```<E2, R2>(f:Task< E2, R2>) => Task< E\E2, [A, B]>```        | Returns a Task with the result values in a tuple of the two grouped Tasks where they will be run in parallel. |
 | orElse   | ```<E2, R2>(f:Task<E2, R2>) => Task< E2, A\R2>```        | Returns a Task that will run the second Task if the first fails. |
-| flatMapF   | ```<E2, R2>(f: (_:R) => (_:D2) => Promise<Either<E2, R2>>) => Task< E\E2, R2>```        | Like flatmap but accepts a function returning a `Promise<Either>`. |
+| flatMapF   | ```<E2, R2>(f: (_:R) => (2) => Promise<Either<E2, R2>>) => Task< E\E2, R2>```        | Like flatmap but accepts a function returning a `Promise<Either>`. |
 | groupF   | ```<E2, R2>(f:Task< E2, R2>) => Task< E\E2, [A, B]>```        |  Like group but accepts a function returning a `Promise<Either>`. |
 | groupFirstF   | ```<E2, R2>(f:Task< E2, R2>) => Task< E\E2, A>```        | Like groupFirst but accepts a function returning a `Promise<Either>`. |
 | groupSecondF   | ```<E2, R2>(f:Task< E2, R2>) => Task< E\E2, B>```        | Like groupSecond but accepts a function returning a `Promise<Either>`. |
-| andThenF   | ```<E2, R2>(_:(_:R) => Promise<Either<E2, R2>>) => Task<E\E2, R2>```        | Like andThen but accepts a function returning a `Promise<Either>`. |
-| orElseF   | ```<E2, R2>(f:(_:D2) => Promise<Either<E2, R2>>) => Task< E2, R\R2>```        | Like orElse but accepts a function returning a `Promise<Either>`. |
+| orElseF   | ```<E2, R2>(f:(2) => Promise<Either<E2, R2>>) => Task< E2, R\R2>```        | Like orElse but accepts a function returning a `Promise<Either>`. |
 | bracket | ```(f: (_: R) => Task<never, any>): <E2, R2>(g: (_: R) => Task<E2, R2>) => Task<E\E2, R2>``` | bracket is useful for modelling effects that consume resources that are used and then released, it accepts a 'release' function that always executes after the second argument 'usage' function has executed, regardless of if it has failed or succeeded. The return type is a Task with the result type determined by the 'usage' function. |
-| runAsPromise | ```(context: D) => Promise<{hasError: boolean, context: D, error: E, result: R, failure: Error}>``` |  Executes this Task, returning a promise with an object of the outcomes. |
-| run | ```<R21, E2, F, D2>(mapResult: (_:R) => R21, mapError: (_:E) => E2, handleFailure?: (_: Error) => F, handleContext?: (_:D) => D2) => () => void``` | Executes this Task with the given handler functions, returning a cancel function. |
+| runAsPromise | ```() => Promise<{tag: 'failure', value: unknown} \| { tag: 'error', value: E } \| {tag: 'result', value: R }>``` |  Executes this Task, returning a promise with an object of the outcomes. |
+| run | ```<R21, E2, F, D2>(mapResult: (_:R) => R21, mapError: (_:E) => E2, handleFailure?: (_: Error) => F, handleContext?: () => D2) => () => void``` | Executes this Task with the given handler functions, returning a cancel function. |
 | runAsPromiseResult | ```(context: D) => Promise<R>``` | Unsafely executes this Task, returning a promise with the result or throwing an Error with an object of type `{ tag: 'error' | 'failure' , value: E | Error }` in an error or exception case.|
 
 | Functions (create Tasks)    | Type | Description |
 | :---        |:---         |:---         |
-| construct | ```<E, R>(f: (_: D) => (resolve: (_: R) => void, reject: (_: E) => void) => void | (() => void)): Task<E, R>``` | Similiar to `new Promise`, an optional 'tidy up' function can be returned to tidy up resources upon cancellation. |
-| Task   | ```<E, R>(f: (_:D) => Promise<Either<E, R>>): Task<E, R>```     | The default constructor for a Task. Create a Task using an async function returning an Either (Right for success, Left for error). |
-| draw   | ```<D2, E, R>(f: (_:D) => Task<E, R>): Task< E, R>```     |
-| drawAsync   | ```<D2, E, R>(f: (_:D) => Task<E, R>): Task< E, R>```     | Create a Task from an async function that wont fail. |
-| drawFailableAsync   | ```<R, D = {}, E = Error>(a:(_:D) => Promise<R>):Task<E, R>```     | Create a Task from an async function that may fail with error type E. |
-| drawFunction   | ```<R, D = {}>(a:(_:D) => R): Task<never, R>```     | Create a Task from a regular function that wont fail. |
-| drawFailableFunction   | ```<R, D = {}, E = Error>(a:(_:D) => R): Task<E, R>```     | Create a Task from a regular function that may fail with error type E. |
-| resolve   | ```<R, D = {}>(a: R): Task<never, R>```     | Create a Task from a value with the result type as the value type. |
-| reject   | ```<E, D = {}>(a: E): Task<E, never>```     | Create a Task from a value with the error type as the value type. |
-| drawNullable   | ```<R>(a: R\null\undefined): Task<{}, null, R>```     | Create a Task from a nullable value with either the error type as null or the result type as the value type, depending on if the value is null or not. |
-| drawEither   | ```<E, R>(a:Either<E, R>):Task<{}, E, R>```     | Create a Task from an Either type. |
+| construct | ```<E, R>(f: () => (resolve: (_: R) => void, reject: (_: E) => void) => void | (() => void)): Task<E, R>``` | Similiar to `new Promise`, an optional 'tidy up' function can be returned to tidy up resources upon cancellation. |
+| Task   | ```<E, R>(f: () => Promise<Either<E, R>>): Task<E, R>```     | The default constructor for a Task. Create a Task using an async function returning an Either (Right for success, Left for error). |
+| resolve   | ```<R>(a: R): Task<never, R>```     | Create a Task from a value with the result type as the value type. |
+| reject   | ```<E>(a: E): Task<E, never>```     | Create a Task from a value with the error type as the value type. |
 
 | Functions (combinators)      | Type | Description |
 | :---        |:---         |:---         |
